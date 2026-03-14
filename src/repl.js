@@ -1,6 +1,6 @@
 import readline from 'node:readline';
 import { stdin as input, stdout as output } from 'node:process';
-import { up, cd } from './navigation.js';
+import { up, cd, ls } from './navigation.js';
 import { argParse } from './utils/argParser.js';
 
 export function setRepl(pathResolver) {
@@ -9,7 +9,7 @@ export function setRepl(pathResolver) {
     console.log(`You are currently in ${pathResolver.currentDir}`);
     rl.prompt();
 
-    rl.on('line', (input) => {
+    rl.on('line', async (input) => {
         const { command, args } = argParse(input);
         switch(command) {
             case 'up':
@@ -17,6 +17,9 @@ export function setRepl(pathResolver) {
                 break;
             case 'cd':
                 cd(pathResolver, args);
+                break;
+            case 'ls':
+                await ls(pathResolver);
                 break;
             case '.exit':
                 rl.close();
@@ -30,5 +33,6 @@ export function setRepl(pathResolver) {
 
     rl.on('close', () => {
         console.log('\nThank you for using Data Processing CLI!');
+        process.exit();
     })
 }
