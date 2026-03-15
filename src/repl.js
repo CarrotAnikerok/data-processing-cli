@@ -4,6 +4,7 @@ import { up, cd, ls } from './navigation.js';
 import { argParse } from './utils/argParser.js';
 import { csvToJson } from './commands/csvToJson.js';
 import { jsonToCsv } from './commands/jsonToCsv.js';
+import { count } from './commands/count.js';
 
 export function setRepl(pathResolver) {
     const rl = readline.createInterface({ input, output});
@@ -28,6 +29,9 @@ export function setRepl(pathResolver) {
                 break;
             case 'json-to-csv':
                 await jsonToCsv(pathResolver, args);
+                break;
+            case 'count':
+                await count(pathResolver, args);
                 break;
             case '.exit':
                 rl.close();
