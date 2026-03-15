@@ -1,6 +1,5 @@
 import { Transform } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
-import fs from 'node:fs/promises';
 import { createReadStream, createWriteStream } from 'node:fs';
 
 class csvToJsonTransfrom extends Transform {
@@ -14,7 +13,7 @@ class csvToJsonTransfrom extends Transform {
         super({
             objectMode: true,
             writableObjectMode: true,
-            writableObjectMode: false
+            readableObjectMode: false
         });
     }
 
@@ -75,6 +74,8 @@ class csvToJsonTransfrom extends Transform {
     }
 }
 
+
+//Attention! Csv file shouldn't have any blank lines at the end for this command to work properly!
 export async function csvToJson(pathResolver, {input, output}) {
     if (!input || !output) {
         console.log('You should add --input and --output for csvToJson command');
