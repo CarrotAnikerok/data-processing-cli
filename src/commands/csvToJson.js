@@ -19,7 +19,6 @@ class csvToJsonTransfrom extends Transform {
     }
 
     _transform(chunk, _, callback) {
-        //console.log(chunk.toString());
         if (!chunk.toString().trim()) return callback();
         const stringChunk = this.chunkLeftOver + chunk.toString();
         let rows;
@@ -37,8 +36,6 @@ class csvToJsonTransfrom extends Transform {
             this.isFirstLine = false;
         } 
 
-        console.log('hey!');
-
         for (let row of rows) {
             const columns = row.split(',');
 
@@ -51,11 +48,9 @@ class csvToJsonTransfrom extends Transform {
                 if (stringChunk.includes('\n')) {
                     this.isHeader = false;
                 }
-                console.log(this.headers.join(', '));
             } else {
                 const record = {};
                 this.headers.forEach((h, i) => record[h] = columns[i]);
-                //this.push(',\n  ');
                 this.push(JSON.stringify(record));
                 this.push(',\n  ');
             }
