@@ -14,7 +14,7 @@ export function cd(pathResolver, path) {
     try {
         pathResolver.setPath(pathResolver.resolveRelative(path));
     } catch {
-        console.log('Operation failed')
+        console.log('Operation failed');
     }
 
     console.log(pathResolver.currentDir);
@@ -22,7 +22,12 @@ export function cd(pathResolver, path) {
 
 //may be error if not permitted
 export async function ls(pathResolver) {
-    const currentFiles = await fs.readdir(pathResolver.currentDir);
+    try {
+        var currentFiles = await fs.readdir(pathResolver.currentDir);
+    } catch {
+        console.log('Operation failed');
+        return;
+    }
     let dirs = [];
     let files = []
     let mostLongName = 0;
@@ -31,8 +36,11 @@ export async function ls(pathResolver) {
             mostLongName = file.length;
         }
 
-
-        const fileStats = await fs.stat(file);
+        try {
+            var fileStats = await fs.stat(file);
+        } catch {
+            continue;
+        }
         if (fileStats.isDirectory()) {
             dirs.push(file);
             continue;
@@ -41,9 +49,16 @@ export async function ls(pathResolver) {
         files.push(file);
     }
 
-    // is it right sorting?
-    dirs.sort();
-    files.sort();
+    const sortFunc = (a, b) => {
+        if (a.toLowerCase() < b.toLowerCase()) {
+            return -1;
+        } else {
+            return 1;
+        }
+    }
+
+    dirs.sort(sortFunc);
+    files.sort(sortFunc);
 
     dirs.forEach(dir => {
         console.log(`${dir.padEnd(mostLongName, ' ')} [folder]`);
@@ -52,4 +67,6 @@ export async function ls(pathResolver) {
     files.forEach(file => {
         console.log(`${file.padEnd(mostLongName, ' ')} [file]`);
     })
+
+    console.log(pathResolver.currentDir);
 }

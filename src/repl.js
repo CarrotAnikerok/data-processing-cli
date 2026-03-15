@@ -2,6 +2,7 @@ import readline from 'node:readline';
 import { stdin as input, stdout as output } from 'node:process';
 import { up, cd, ls } from './navigation.js';
 import { argParse } from './utils/argParser.js';
+import { csvToJson } from './commands/csvToJson.js';
 
 export function setRepl(pathResolver) {
     const rl = readline.createInterface({ input, output});
@@ -20,6 +21,9 @@ export function setRepl(pathResolver) {
                 break;
             case 'ls':
                 await ls(pathResolver);
+                break;
+            case 'csv-to-json':
+                await csvToJson(pathResolver, args);
                 break;
             case '.exit':
                 rl.close();
